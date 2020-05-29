@@ -85,6 +85,8 @@ def hotels_nearby():
         count+=1
         for each in hotels_list["results"]:
             current_hotel_dict = {}
+            
+
             print(each)
             
     
