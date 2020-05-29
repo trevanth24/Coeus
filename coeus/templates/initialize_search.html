@@ -1,0 +1,244 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <style>
+        body {
+            background-image: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0,0,0,.5) ),url('static/home1.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: 100% 100%;
+        }
+
+        * { box-sizing: border-box; }
+        /* body {
+        font: 16px Arial;
+        } */
+        .autocomplete {
+            /*the container must be positioned relative:*/
+            position: relative;
+            display: inline-block;
+        }
+        input {
+            border: 1px solid transparent;
+            background-color: #f1f1f1;
+            padding: 10px;
+            font-size: 16px;
+        }
+        input[type=text] {
+            background-color: #ebe5e5;
+            width: 100%;
+        }
+        input[type=submit] {
+            background-color: DodgerBlue;
+            color: #fff;
+        }
+        .autocomplete-items {
+            position: absolute;
+            border: 1px solid #ebe5e5;
+            border-bottom: none;
+            border-top: none;
+            z-index: 99;
+            /*position the autocomplete items to be the same width as the container:*/
+            top: 100%;
+            left: 0;
+            right: 0;
+        }
+        .autocomplete-items div {
+            padding: 10px;
+            cursor: pointer;
+            background-color: #ebe5e5;
+            border-bottom: 1px solid #d4d4d4;
+        }
+        .autocomplete-items div:hover {
+            /*when hovering an item:*/
+            background-color: #e9e9e9;
+        }
+        .autocomplete-active {
+            /*when navigating through the items using the arrow keys:*/
+            background-color: DodgerBlue !important;
+            color: #ebe5e5;
+        }
+    </style>
+
+    <div class="container">
+        <div class="row justify-content-md-center" style = "padding-top: 75px;">
+          <div class="col-md-auto">
+            <h1>Search for a Location</h1>
+            <hr></hr>
+          </div>
+        </div>
+        <div class="row justify-content-md-center">
+            <div class="col-md-auto">
+              Start Typing for Suggestions :)
+            </div>            
+        </div>
+
+        <div class="row justify-content-md-center" style = "padding-top: 50px;">
+            <form autocomplete="off" action="/action_page.php">
+                <div id="selector" class="autocomplete" style="width:300px;">
+                    <input type="text" id="location_search" name="location_search" value="">
+                    
+                </div>
+            </form>
+        </div>
+        <div class="row justify-content-md-center" style = "padding-top: 5px;">
+            <div class="col-md-auto">
+                <form action="{{ url_for('main.hotels_nearby') }}" method="post">
+                    <input type="hidden" id="location_search2" name="location_search2" value="">
+                    <input type="hidden" id="location_description" name="location_description" value="">
+                    <input type="hidden" id="location_placeid" name="location_placeid" value="">
+                    <input type="hidden" id="location_city" name="location_city" value="">
+                    <input type="hidden" id="location_state" name="location_state" value="">
+                    <input type="hidden" id="location_country" name="location_country" value="">
+                    <h1 id = "text_location_search2"> </h1>
+                    <h3 id="text_location_description"> </h3>
+                    <h3 id="text_location_placeid"> </h3>
+                    <h3 id="text_location_city"> </h3>
+                    <h3 id="text_location_state"> </h3>
+                    <h3 id="text_location_country"> </h3>
+                    <input type="submit" value="Submit">
+                </form>
+
+            </div>
+          </div>
+
+
+    </div>
+    
+
+
+
+
+<!-- <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css"></link>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script> -->
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<!-- <link rel="stylesheet" href="/resources/demos/style.css"> -->
+<!-- <script src="https://code.jquery.com/jquery-1.12.4.js"></script> -->
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>  
+
+<script>
+$( function() {
+
+    $( "#location_search" ).autocomplete({
+        source: function(request, response){  
+            $.ajax({
+                method:"POST",
+                url:"/livesearch",
+                data:{text:$("#location_search").val()},
+                success:function(res){
+                    var myList = []
+                    for(var x in res){
+                        myList.push(res[x]);
+                    }
+                    response($.map(myList, function (item) {                              
+                        return {
+                            description: item.description,
+                            city: item.city,
+                            state: item.state,
+                            country: item.country,
+                            main_text: item.main_text,
+                            place_id: item.place_id,
+                        }
+                    }))
+                }
+            });
+        },
+        select: function( event, ui ) {
+            $( "#location_search" ).val( ui.item.description );
+            $( "#location_search2" ).val( ui.item.main_text );
+            $( "#location_description" ).val( ui.item.description );
+            $( "#location_placeid" ).val( ui.item.place_id );
+            $( "#location_city" ).val( ui.item.city );
+            $( "#location_state" ).val( ui.item.state );
+            $( "#location_country" ).val( ui.item.country );
+        }
+    }).autocomplete( "instance" )._renderItem = function( ul, item ) {
+        return $( "<li>" )
+            .append( "<div>" + item.description + "</div>" )
+            .appendTo( ul );
+        };
+
+});
+
+// $(document).ready(function(){
+//     $("#location_search").on("input",function(e){
+//         $("#result").empty();
+//         $.ajax({
+//             method:"POST",
+//             url:"/livesearch",
+//             data:{text:$("#location_search").val()},
+//             success:function(res){
+
+//                 var count = 0;
+//                 var myDesc = [];
+//                 var myId = [];
+//                 var myText = [];
+//                 var myTable = [];
+            
+//                 for(var x in res)
+//                 {
+//                     count = count + 1;
+
+//                     myText.push(res[x]);
+//                     // myId.push(res[x].place_id);
+//                 }
+//                 console.log(myText);
+
+//                 // $( "#location_search" ).autocomplete({
+//                 //     source: myText
+//                 // })
+                
+
+//                 $( "#location_search" ).autocomplete({
+//                     source: function(request, response){
+//                             response($.map(myText, function (item) {
+//                                 return {
+//                                     main_text: item.main_text,
+//                                     place_id: item.place_id,
+//                                 }
+//                             }))
+//                     },
+                    
+//                     select: function( event, ui ) {
+//                         $( "#location_search" ).val( ui.item.main_text );
+//                         $( "#location_id" ).val( ui.item.place_id );
+//                     }
+//                 }).autocomplete( "instance" )._renderItem = function( ul, item ) {
+//                     return $( "<li>" )
+//                         .append( "<div>" + item.main_text + "</div>" )
+//                         .appendTo( ul );
+//                     };                    
+//                 count = 0;
+//             }
+//         });
+//     });
+// });
+</script>
+
+<script>
+    window.addEventListener("click", myFunction);
+    function myFunction() {
+        console.log("starts")
+        var elementValue = document.getElementById("location_search2").value;
+        document.getElementById("text_location_search2").innerHTML = elementValue;
+
+        var elementValue = document.getElementById("location_description").value;
+        document.getElementById("text_location_description").innerHTML = elementValue;
+
+        var elementValue = document.getElementById("location_placeid").value;
+        document.getElementById("text_location_placeid").innerHTML = elementValue;
+
+        var elementValue = document.getElementById("location_city").value;
+        document.getElementById("text_location_city").innerHTML = elementValue;
+
+        var elementValue = document.getElementById("location_state").value;
+        document.getElementById("text_location_state").innerHTML = elementValue;
+
+        var elementValue = document.getElementById("location_country").value;
+        document.getElementById("text_location_country").innerHTML = elementValue;
+    }
+
+</script>
+{% endblock content %}
+
+

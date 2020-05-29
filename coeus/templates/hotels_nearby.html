@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <style>
+        body {
+            background-image: linear-gradient( rgba(0, 0, 0, 0.103), rgba(0,0,0,.103) ),url('static/home1.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: 100% 100%;
+            
+        }
+    </style>
+    <h1>{{location_search2}}</h1>
+    <input value = {{location_description}}>{{location_description}}</input>
+    <h1 value = location_description></h1>
+    <h1>About Page</h1>
+{% endblock content %}

@@ -1,0 +1,57 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <style>
+        body {
+            background-image: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0,0,0,.5) ),url('static/home1.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: 100% 100%;
+            
+        }
+        h1, h2, h3, h4, h5, h6 {
+            color: #ebe5e5;
+        }
+        .btn-start{
+            /* background-color: #008CBA;
+            padding: 10px 24px; */
+            padding: 3px 15px;
+            width: 100px;
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: transparent;
+            color: #2e2e2eec;
+            border: 0.75px solid #ebe5e5;
+            transition-duration: 0.4s;
+        }
+
+        .btn-start:hover {
+            background-color: #ebe5e5; 
+            color: black;
+        }
+        /* .button4 {background-color: #e7e7e7; color: black;} Gray
+        .button5 {background-color: #555555;} Black */
+    </style>
+    
+    <div class="container">
+        <div class="row justify-content-md-center" style = "padding-top: 100px;">
+          <div class="col-md-auto">
+            <h1>Start Your Search Here!</h1>
+            <hr></hr>
+          </div>
+        </div>
+        <div class="row justify-content-md-center">
+            <div class="col-md-auto">
+              Hotel Collection based on Nearby Location
+            </div>            
+        </div>
+
+        <div class="row justify-content-md-center" style = "padding-top: 50px;">
+            <div class="col-md-auto" style = "padding-left: 450px;">
+                <a type="button" class="btn btn-primary btn-start" href="{{ url_for('main.initialize_search') }}"><span>Search</span></a>
+                <!-- <button type="button" class="btn-start" href="{{ url_for('posts.new_post') }}"><span>Search</span></button> -->
+            </div> 
+        </div>
+    </div>
+    
+{% endblock content %}
